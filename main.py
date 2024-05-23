@@ -5,6 +5,16 @@ from customtkinter import *
 from PIL import Image
 #Imports the appropriate libraries for GUI interface
 
+def openMenu():
+    app.destroy()
+    menu = CTk()
+    menu.geometry("500x400")
+    menu.maxsize(500, 400)
+    menu.minsize(500,400)
+    menu.mainloop()
+
+
+
 
 
 
@@ -36,6 +46,8 @@ def logInPressed():
     enteredUsername = usernameEntry.get()
     enteredPword = passwordEntry.get()
     print("enteredUsername = " + enteredUsername + "\nenteredPword = " + enteredPword)
+    if enteredUsername == "ben":
+        openMenu()
 
 
 welcomeLabel = CTkLabel(master=app, text="Welcome to the MHS Cybersecurity Dashboard", font=("Calibri", 20))
