@@ -30,9 +30,25 @@ def openMenu():
     menu.maxsize(500, 400)
     menu.minsize(500,400)
     menu.title("MHS Sybersecurity Management Platform")
-    quitBtn2 = CTkButton(master=menu, text="Exit", corner_radius=10, fg_color="transparent", 
+
+    instructionLabel = CTkLabel(master=menu, text="Please select your desired operation", 
+                        font=("Calibri", 20))
+    instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
+   
+    keyLogBtn = CTkButton(master=menu, text="Keylogger", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
+    encryptBtn = CTkButton(master=menu, text="Encryption", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
+    networkBtn = CTkButton(master=menu, text="Network Surveillance", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
+    
+    keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
+    encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
+    networkBtn.place(relx=0.5, rely=0.6, anchor="center")
+
+    quitBtn = CTkButton(master=menu, text="Exit", corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=on_closing)
-    quitBtn2.place(relx=0.5, rely=0.85, anchor="center")
+    quitBtn.place(relx=0.5, rely=0.85, anchor="center")
 
 
     menu.protocol("WM_DELETE_WINDOW", on_closing)
@@ -73,7 +89,7 @@ unsuccessfulLogInMessage = CTkLabel(master=app, text=" ", text_color="#EE4B2B",
                                     anchor="center", font=("ArialBold", 12))
 unsuccessfulLogInMessage.place(relx=0.5, rely=0.7, anchor="center")
 
-def logInPressed(e):
+def logInPressed(event=None):
     enteredUsername = usernameEntry.get()
     enteredPword = passwordEntry.get()
     print("enteredUsername = " + enteredUsername + "\nenteredPword = " + enteredPword)
