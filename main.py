@@ -3,7 +3,12 @@
 
 from customtkinter import *
 from PIL import Image
+import Keylogger
+import Network
+import Encryptor
+import time
 #Imports the appropriate libraries for GUI interface
+#Also imports other files to ensure efficiency and prevent project from being too big
 
 def openMenu():
     app.destroy()
@@ -12,10 +17,6 @@ def openMenu():
     menu.maxsize(500, 400)
     menu.minsize(500,400)
     menu.mainloop()
-
-
-
-
 
 
 app = CTk()
@@ -42,12 +43,23 @@ passwordLabel.place(relx=0.275, rely= 0.52, anchor="w")
 passwordEntry = CTkEntry(master=app, width=225, fg_color="#EEEEEE", border_color="#598eb2", border_width=1, text_color="#000000", show="*")
 passwordEntry.place(relx=0.5, rely=0.6, anchor="center")
 
+unsuccessfulLogInMessage = CTkLabel(master=app, text=" ", text_color="#EE4B2B", anchor="center", font=("ArialBold", 12))
+unsuccessfulLogInMessage.place(relx=0.5, rely=0.9, anchor="center")
+
 def logInPressed():
     enteredUsername = usernameEntry.get()
     enteredPword = passwordEntry.get()
     print("enteredUsername = " + enteredUsername + "\nenteredPword = " + enteredPword)
-    if enteredUsername == "ben":
+    if enteredUsername == "admin" and enteredPword == "Merewether2024":
         openMenu()
+    else:
+        print("Unsuccessful")
+        unsuccessfulLogInMessage.configure(text="Unsuccessful Login Attempt, Please Try Again")
+        app.update_idletasks()
+        app.after(5000, unsuccessfulLogInMessage.configure(text=" "))
+        
+        
+
 
 
 welcomeLabel = CTkLabel(master=app, text="Welcome to the MHS Cybersecurity Dashboard", font=("Calibri", 20))
@@ -64,9 +76,11 @@ logInBtn.place(relx=0.5, rely=0.8, anchor="center")
 #Creates and places the login button
 
 
+def on_closing():
+    print("Exited with code 0")
+    app.destroy()
 
-
-
+app.protocol("WM_DELETE_WINDOW", on_closing)
 
 app.mainloop()
 #Opens the window
