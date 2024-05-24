@@ -17,10 +17,6 @@ import sys
 threadK = threading.Thread(target=keylogger,args=[1])
 
 def keylogging():
-<<<<<<< HEAD
-    global keyLogBtn
-    keyLogBtn["state"] = "disabled"
-
     response = msg.askyesnocancel("Confirm Keylogger", "Are you sure you want to begin keylogger?")
     if response is None:
         # User clicked "Cancel"
@@ -46,12 +42,7 @@ def openMenu():
     app.quit()
     global currentWindow
     menu = CTk()
-<<<<<<< HEAD
-    currentWindow = menu
-    currentWindow.wm_state("normal") 
-=======
     currentWindow = menu 
->>>>>>> cdca2b38000bc2e5a434c8eeeb17fc92ba925d9d
     menu.geometry("500x400")
     menu.maxsize(500, 400)
     menu.minsize(500,400)
@@ -64,10 +55,6 @@ def openMenu():
     global keyLogBtn
     keyLogBtn = CTkButton(master=menu, text="Keylogger", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command=keylogging)
-<<<<<<< HEAD
-    keyLogBtn["state"] = "normal"
-=======
->>>>>>> cdca2b38000bc2e5a434c8eeeb17fc92ba925d9d
     encryptBtn = CTkButton(master=menu, text="Encryption", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
     networkBtn = CTkButton(master=menu, text="Network Surveillance", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
