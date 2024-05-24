@@ -3,14 +3,27 @@
 
 from customtkinter import *
 from PIL import Image
-import Keylogger
+from Keylogger import keylogger
 import Network
 import Encryptor
 import time
+import threading
 from tkinter import messagebox as msg
+import sys
+
 #Imports the appropriate libraries for GUI interface
 #Also imports other files to ensure efficiency and prevent project from being too big
 
+threadK = threading.Thread(target=keylogger,args=[1])
+
+def keylogging():
+    response = msg.askyesnocancel("Confirm Keylogger", "Are you sure you want to begin keylogger?")
+    if response is None:
+        # User clicked "Cancel"
+        return
+    elif response:
+        threadK.start()
+        return
 
 def on_closing():
     response = msg.askyesnocancel("Confirm Exit", "Are you sure you want to exit?")
@@ -19,13 +32,17 @@ def on_closing():
         return
     elif response:
     # Close the application
-        exit(0)
-
+        print("Exited with code 0")
+        global currentWindow
+        currentWindow.withdraw()
+        os._exit(0)
 
 def openMenu():
     app.withdraw()
     app.quit()
+    global currentWindow
     menu = CTk()
+    currentWindow = menu 
     menu.geometry("500x400")
     menu.maxsize(500, 400)
     menu.minsize(500,400)
@@ -36,7 +53,7 @@ def openMenu():
     instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
    
     keyLogBtn = CTkButton(master=menu, text="Keylogger", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
-                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
+                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command=keylogging)
     encryptBtn = CTkButton(master=menu, text="Encryption", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
     networkBtn = CTkButton(master=menu, text="Network Surveillance", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
@@ -58,6 +75,8 @@ def openMenu():
 
 
 app = CTk()
+global currentWindow
+currentWindow = app
 app.geometry("500x400")
 app.minsize(500,400)
 app.maxsize(500, 400)
