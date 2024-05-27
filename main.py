@@ -6,15 +6,29 @@ from PIL import Image
 from Keylogger import keylogger
 import Network
 import Encryptor
-import time
-import threading
+import multiprocessing
 from tkinter import messagebox as msg
-import sys
+import os
+import time
+
 
 #Imports the appropriate libraries for GUI interface
 #Also imports other files to ensure efficiency and prevent project from being too big
 
-threadK = threading.Thread(target=keylogger,args=[1])
+threadK = multiprocessing.Process(target=keylogger,args=[1])
+
+def place():
+    keyLogBtn.place()
+    networkBtn.place()
+    quitBtn.place()
+    encryptBtn.place()
+    instructionLabel.place()
+    keyLogLabel.place_forget()
+    
+    
+
+    
+
 
 def keylogging():
     response = msg.askyesnocancel("Confirm Keylogger", "Are you sure you want to begin keylogger?")
@@ -22,8 +36,34 @@ def keylogging():
         # User clicked "Cancel"
         return
     elif response:
+        global keyLogLabel
+        keyLogLabel = CTkLabel(master=menu, text="Keylogger is running", font=("Calibri", 20))
+        keyLogLabel.place(relx=0.5, rely=0.5, anchor="center")
+        keyLogBtn.place_forget()
+        networkBtn.place_forget()
+        encryptBtn.place_forget()
+        instructionLabel.place_forget()
+        quitBtn.place_forget()
+        menu.update()
         threadK.start()
-        return
+
+        def replace():
+            quitBtn.place(relx=0.5, rely=0.85, anchor="center")
+            keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
+            encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
+            networkBtn.place(relx=0.5, rely=0.6, anchor="center")
+            instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
+            keyLogLabel.place_forget()
+            menu.update()
+            threadK.terminate()
+
+        menu.after(10000, replace)
+        
+        
+
+
+
+
 
 def on_closing():
     response = msg.askyesnocancel("Confirm Exit", "Are you sure you want to exit?")
@@ -37,10 +77,14 @@ def on_closing():
         currentWindow.withdraw()
         os._exit(0)
 
+
+    
+
 def openMenu():
     app.withdraw()
     app.quit()
     global currentWindow
+    global menu
     menu = CTk()
     currentWindow = menu 
     menu.geometry("500x400")
@@ -48,21 +92,28 @@ def openMenu():
     menu.minsize(500,400)
     menu.title("MHS Sybersecurity Management Platform")
 
+    global instructionLabel
+
     instructionLabel = CTkLabel(master=menu, text="Please select your desired operation", 
                         font=("Calibri", 20))
     instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
 
-    global keyLogBtn
+    global keyLogBtn, encryptBtn, networkBtn
+
     keyLogBtn = CTkButton(master=menu, text="Keylogger", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
-                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command=keylogging)
+                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command = keylogging)
+
     encryptBtn = CTkButton(master=menu, text="Encryption", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
+
     networkBtn = CTkButton(master=menu, text="Network Surveillance", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
     
     keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
     encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
     networkBtn.place(relx=0.5, rely=0.6, anchor="center")
+
+    global quitBtn
 
     quitBtn = CTkButton(master=menu, text="Exit", corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=on_closing)
@@ -72,6 +123,11 @@ def openMenu():
     menu.protocol("WM_DELETE_WINDOW", on_closing)
     menu.mainloop()
 
+
+
+
+
+   
 
 
 
