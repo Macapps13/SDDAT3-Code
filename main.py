@@ -5,17 +5,22 @@ from customtkinter import *
 from PIL import Image
 from Keylogger import keylogger
 import Network
-import Encryptor
+from Encryptor import encryptor
 import multiprocessing
 from tkinter import messagebox as msg
 import os
 import time
+import threading
+from cryptography.fernet import Fernet
 
 
 #Imports the appropriate libraries for GUI interface
 #Also imports other files to ensure efficiency and prevent project from being too big
 
-threadK = multiprocessing.Process(target=keylogger,args=[1])
+key = Fernet.generate_key()
+
+
+fernet = Fernet(key)
 
 def place():
     keyLogBtn.place()
@@ -45,19 +50,23 @@ def keylogging():
         instructionLabel.place_forget()
         quitBtn.place_forget()
         menu.update()
-        threadK.start()
+        menu.iconify()
+        
+        keylogger(1)
 
-        def replace():
-            quitBtn.place(relx=0.5, rely=0.85, anchor="center")
-            keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
-            encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
-            networkBtn.place(relx=0.5, rely=0.6, anchor="center")
-            instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
-            keyLogLabel.place_forget()
-            menu.update()
-            threadK.terminate()
+        menu.deiconify()
+        quitBtn.place(relx=0.5, rely=0.85, anchor="center")
+        keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
+        encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
+        networkBtn.place(relx=0.5, rely=0.6, anchor="center")
+        instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
+        keyLogLabel.place_forget()
+        menu.update()
 
-        menu.after(10000, replace)
+def encrypt():
+    currentWindow.withdraw()
+    encryptor(fernet)
+    currentWindow.deiconify()
         
         
 
@@ -70,6 +79,7 @@ def on_closing():
     if response is None:
         # User clicked "Cancel"
         return
+    
     elif response:
     # Close the application
         print("Exited with code 0")
@@ -104,7 +114,7 @@ def openMenu():
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command = keylogging)
 
     encryptBtn = CTkButton(master=menu, text="Encryption", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
-                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
+                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command = encrypt)
 
     networkBtn = CTkButton(master=menu, text="Network Surveillance", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
