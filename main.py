@@ -19,8 +19,9 @@ from cryptography.fernet import Fernet
 
 key = Fernet.generate_key()
 
-
 fernet = Fernet(key)
+
+
 
 def place():
     keyLogBtn.place()
@@ -144,10 +145,19 @@ def openMenu():
 app = CTk()
 global currentWindow
 currentWindow = app
-app.geometry("500x400")
 app.minsize(500,400)
 app.maxsize(500, 400)
 set_appearance_mode("dark")
+hs = app.winfo_screenheight()
+ws = app.winfo_screenwidth()
+print(str(ws))
+print(str(hs))
+w = 500
+h = 400
+x = (ws/2) - (w/2)
+y = (hs/2) - (h/2)
+
+app.geometry('%dx%d+%d+%d' % (w, h, x, y))
 #Establishes the window, window size, and appearance
 
 
