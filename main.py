@@ -51,11 +51,10 @@ def keylogging():
         instructionLabel.place_forget()
         quitBtn.place_forget()
         menu.update()
-        menu.iconify()
+        
         
         start_keylogger()
-
-        menu.deiconify()
+        time.sleep(10)
         quitBtn.place(relx=0.5, rely=0.85, anchor="center")
         keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
         encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
@@ -154,8 +153,8 @@ print(str(ws))
 print(str(hs))
 w = 500
 h = 400
-x = (ws/2) - (w/2)
-y = (hs/2) - (h/2)
+x = (ws/2)
+y = (hs/2)
 
 app.geometry('%dx%d+%d+%d' % (w, h, x, y))
 #Establishes the window, window size, and appearance
