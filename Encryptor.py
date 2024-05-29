@@ -15,7 +15,14 @@ def back2():
 def encryptor(fernet): 
     quit = 0
     encryptWindow = CTk()
-    encryptWindow.geometry("500x400")
+    hs = encryptWindow.winfo_screenheight()
+    ws = encryptWindow.winfo_screenwidth()
+    w = 500
+    h = 400
+    x = (ws/2)
+    y = (hs/2)
+
+    encryptWindow.geometry('%dx%d+%d+%d' % (w, h, x, y))
     encryptWindow.minsize(500,400)
     encryptWindow.maxsize(500, 400)
     set_appearance_mode("dark")
@@ -67,7 +74,7 @@ def encryptor(fernet):
         
         def goCopy():
             msg = decryptTextbox.get("0.0", "end")
-            back(msg)
+            copy(msg)
 
 
         backBtn = CTkButton(master=encryptWindow, text="Back", corner_radius=10, fg_color="transparent", 

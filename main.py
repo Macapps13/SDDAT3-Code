@@ -12,16 +12,77 @@ import os
 import time
 import threading
 from cryptography.fernet import Fernet
+from googletrans import Translator
 
+translator = Translator()
 
 #Imports the appropriate libraries for GUI interface
 #Also imports other files to ensure efficiency and prevent project from being too big
 
 key = Fernet.generate_key()
-
 fernet = Fernet(key)
 
+global selectedLang
 
+
+keyLogLabelText = "Keylogger is running..."
+keyLogLengthErrorLabelText = "Error: Length Provided was not a valid input (Must be a whole number)"
+keyLogLengthLabelText = "How long in minutes should the keylogger run for?"
+keyLogLengthBtnText = "Submit"
+responseText = "Are you sure you want to exit?"
+welcomeLabel2Text = "Cybersecurity Dashboard"
+instructionLabelText = "Please select your desired operation"
+quitBtnText = "Exit"
+unsuccessfulLogInMessageText = "Unsuccessful Login Attempt, Please Try Again"
+logInBtnText = "Log In"
+keyLogBtnText =  "Keylogger"
+networkBtnText =  "Network Surveillance"
+encryptBtnText = "Encryption"
+welcomeLabelText = "Welcome to the MHS Cybersecurity Dashboard"
+
+global outputs
+global ogOutputs
+
+ogOutputs = [keyLogLabelText, keyLogLengthErrorLabelText, keyLogLengthLabelText, keyLogLengthBtnText, responseText, 
+           welcomeLabel2Text, instructionLabelText, quitBtnText, unsuccessfulLogInMessageText, logInBtnText, keyLogBtnText,
+           networkBtnText, encryptBtnText, welcomeLabelText]
+
+outputs = [keyLogLabelText, keyLogLengthErrorLabelText, keyLogLengthLabelText, keyLogLengthBtnText, responseText, 
+           welcomeLabel2Text, instructionLabelText, quitBtnText, unsuccessfulLogInMessageText, logInBtnText, keyLogBtnText,
+           networkBtnText, encryptBtnText, welcomeLabelText]
+
+
+def changeLanguage(event=None):
+    global outputs
+    global selectedLang
+    selectedLang = languageSelector.get()
+    print("Language changed to " + selectedLang)
+    app.withdraw()
+    if selectedLang == "French":
+        frTranslations = [translator.translate(o, dest='fr').text for o in ogOutputs]
+        outputs = frTranslations
+    elif selectedLang == "Italian":
+        itTranslations = [translator.translate(o, dest='it').text for o in ogOutputs]
+        outputs = itTranslations 
+    elif selectedLang == "Spanish":
+        esTranslations = [translator.translate(o, dest='es').text for o in ogOutputs]
+        outputs = esTranslations
+    elif selectedLang == "Japanese":
+        jpTranslations = [translator.translate(o, dest='ja').text for o in ogOutputs]
+        outputs = jpTranslations
+    elif selectedLang == "Arabic":
+        arTranslations = [translator.translate(o, dest='ar').text for o in ogOutputs]
+        outputs = arTranslations
+    elif selectedLang == "English":
+        outputs = ogOutputs
+
+    print(outputs)
+    quitBtn.configure(text=outputs[7])
+    logInBtn.configure(text=outputs[9])
+    welcomeLabel.configure(text=outputs[13])
+    app.update()
+    app.deiconify()
+    return
 
 def place():
     keyLogBtn.place()
@@ -30,14 +91,11 @@ def place():
     encryptBtn.place()
     instructionLabel.place()
     keyLogLabel.place_forget()
-    
-    
-
-    
+ 
 
 
 def keylogging():
-        
+    welcomeLabel2.place_forget()
     keyLogBtn.place_forget()
     networkBtn.place_forget()
     encryptBtn.place_forget()
@@ -60,7 +118,7 @@ def keylogging():
             keyLogLengthLabel.place_forget()
             keyLogLengthErrorLabel.place_forget()
             global keyLogLabel
-            keyLogLabel = CTkLabel(master=menu, text="Keylogger is running", font=("Calibri", 20))
+            keyLogLabel = CTkLabel(master=menu, text=outputs[0], font=("Calibri", 20))
             keyLogLabel.place(relx=0.5, rely=0.5, anchor="center")
             menu.update()
     
@@ -73,13 +131,14 @@ def keylogging():
             encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
             networkBtn.place(relx=0.5, rely=0.6, anchor="center")
             instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
+            welcomeLabel.place(relx=0.5, rely=0.1, anchor="center")
             keyLogLabel.place_forget()
             
 
             menu.update()
             return
         except:
-            keyLogLengthErrorLabel.configure(text="Error: Length Provided was not a valid input (Must be a whole number)")
+            keyLogLengthErrorLabel.configure(text=outputs[1])
             keyLogLengthEntry.delete("0", "end")
             menu.update()
             return
@@ -89,12 +148,12 @@ def keylogging():
         
 
 
-    keyLogLengthLabel = CTkLabel(master=menu, text="How long in minutes should the keylogger run for?", font=("Calibri", 20))
+    keyLogLengthLabel = CTkLabel(master=menu, text=outputs[2], wraplength=350, font=("Calibri", 20))
     keyLogLengthLabel.place(relx=0.5, rely=0.2, anchor="center")
     keyLogLengthEntry = CTkEntry(master=menu, width=50, fg_color="#EEEEEE", border_color="#598eb2", 
                         border_width=1, text_color="#000000")
     keyLogLengthEntry.place(relx=0.5, rely=0.4, anchor="center")
-    keyLogLengthBtn = CTkButton(master=menu, text="Submit", corner_radius=10, fg_color="transparent", 
+    keyLogLengthBtn = CTkButton(master=menu, text=outputs[3], corner_radius=10, fg_color="transparent", 
                     hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=runKeylog)
     keyLogLengthBtn.place(relx=0.5, rely=0.6, anchor="center")
 
@@ -104,14 +163,9 @@ def encrypt():
     encryptor(fernet)
     currentWindow.deiconify()
         
-        
-
-
-
-
 
 def on_closing():
-    response = msg.askyesnocancel("Confirm Exit", "Are you sure you want to exit?")
+    response = msg.askyesnocancel("Confirm Exit", str(outputs[4]))
     if response is None:
         # User clicked "Cancel"
         return
@@ -133,35 +187,46 @@ def openMenu():
     global menu
     menu = CTk()
     currentWindow = menu 
-    menu.geometry("500x400")
     menu.maxsize(500, 400)
     menu.minsize(500,400)
+    w = 500
+    h = 400
+    x = (ws/2)
+    y = (hs/2)
+
+    menu.geometry('%dx%d+%d+%d' % (w, h, x, y))
     menu.title("MHS Sybersecurity Management Platform")
+
+    global welcomeLabel2
+
+    welcomeLabel2 = CTkLabel(master=menu, text="MHS " + outputs[5], 
+                        font=("Calibri", 20))
+    welcomeLabel2.place(relx=0.5, rely=0.1, anchor="center")
 
     global instructionLabel
 
-    instructionLabel = CTkLabel(master=menu, text="Please select your desired operation", 
+    instructionLabel = CTkLabel(master=menu, text=outputs[6], 
                         font=("Calibri", 20))
-    instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
+    instructionLabel.place(relx=0.5, rely=0.20, anchor="center")
 
     global keyLogBtn, encryptBtn, networkBtn
 
-    keyLogBtn = CTkButton(master=menu, text="Keylogger", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+    keyLogBtn = CTkButton(master=menu, text=outputs[10], corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command = keylogging)
 
-    encryptBtn = CTkButton(master=menu, text="Encryption", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+    encryptBtn = CTkButton(master=menu, text=outputs[12], corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command = encrypt)
 
-    networkBtn = CTkButton(master=menu, text="Network Surveillance", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+    networkBtn = CTkButton(master=menu, text=outputs[11], corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
     
-    keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
-    encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
-    networkBtn.place(relx=0.5, rely=0.6, anchor="center")
+    keyLogBtn.place(relx=0.5, rely=0.35, anchor="center")
+    encryptBtn.place(relx=0.5, rely=0.5, anchor="center")
+    networkBtn.place(relx=0.5, rely=0.65, anchor="center")
 
     global quitBtn
 
-    quitBtn = CTkButton(master=menu, text="Exit", corner_radius=10, fg_color="transparent", 
+    quitBtn = CTkButton(master=menu, text=outputs[7], corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=on_closing)
     quitBtn.place(relx=0.5, rely=0.85, anchor="center")
 
@@ -176,7 +241,8 @@ def openMenu():
    
 
 
-
+print("Lisenced by Ben Alvaro, 2024")
+print("Program Starting...")
 app = CTk()
 global currentWindow
 currentWindow = app
@@ -185,8 +251,8 @@ app.maxsize(500, 400)
 set_appearance_mode("dark")
 hs = app.winfo_screenheight()
 ws = app.winfo_screenwidth()
-print(str(ws))
-print(str(hs))
+print("Window Width: " + str(ws))
+print("WIndow Height: " + str(hs))
 w = 500
 h = 400
 x = (ws/2)
@@ -218,7 +284,7 @@ passwordEntry.place(relx=0.5, rely=0.6, anchor="center")
 
 unsuccessfulLogInMessage = CTkLabel(master=app, text=" ", text_color="#EE4B2B", 
                                     anchor="center", font=("ArialBold", 12))
-unsuccessfulLogInMessage.place(relx=0.5, rely=0.7, anchor="center")
+unsuccessfulLogInMessage.place(relx=0.5, rely=0.95, anchor="center")
 
 def logInPressed(event=None):
     enteredUsername = usernameEntry.get()
@@ -226,7 +292,7 @@ def logInPressed(event=None):
     print("enteredUsername = " + enteredUsername + "\nenteredPword = " + enteredPword)
     if enteredUsername != "admin" or enteredPword != "Merewether2024":
         print("Unsuccessful")
-        unsuccessfulLogInMessage.configure(text="Unsuccessful Login Attempt, Please Try Again")
+        unsuccessfulLogInMessage.configure(text=outputs[8])
         app.update_idletasks()
     else:
         openMenu()
@@ -236,22 +302,28 @@ def logInPressed(event=None):
 
 
 
-welcomeLabel = CTkLabel(master=app, text="Welcome to the MHS Cybersecurity Dashboard", 
+welcomeLabel = CTkLabel(master=app, text=outputs[13], 
                         font=("Calibri", 20))
-instructionLabel = CTkLabel(master=app, text="Please log in with your administor credentials", 
-                            font=("Calibri", 20))
+
 #Creates labels for welcome message and assigns properties
 
 welcomeLabel.place(relx=0.5, rely=0.1, anchor="center")
-instructionLabel.place(relx=0.5, rely=0.2, anchor="center")
 #Places the labels in the middle horizontally, and slightly up
 
-logInBtn = CTkButton(master=app, text="Log In", corner_radius=10, fg_color="transparent", 
+global languageSelector
+
+languageLabel = CTkLabel(master=app, text="Language:")
+languageLabel.place(relx=0.35, rely=0.73, anchor="center")
+languageSelector = CTkComboBox(master=app, values=["English", "French", "Italian", "Spanish", "Japanese", "Arabic"], state="readonly", command=changeLanguage)
+languageSelector.set("English")
+languageSelector.place(relx=0.6, rely=0.73, anchor="center")
+
+logInBtn = CTkButton(master=app, text=outputs[9], corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=logInPressed)
 logInBtn.place(relx=0.3, rely=0.85, anchor="center")
 #Creates and places the login button
 
-quitBtn = CTkButton(master=app, text="Exit", corner_radius=10, fg_color="transparent", 
+quitBtn = CTkButton(master=app, text=outputs[7], corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=on_closing)
 quitBtn.place(relx=0.7, rely=0.85, anchor="center")
 
