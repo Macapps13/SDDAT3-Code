@@ -73,6 +73,15 @@ def changeLanguage(event=None):
     elif selectedLang == "Arabic":
         arTranslations = [translator.translate(o, dest='ar').text for o in ogOutputs]
         outputs = arTranslations
+    elif selectedLang == "Hebrew":
+        heTranslations = [translator.translate(o, dest='he').text for o in ogOutputs]
+        outputs = heTranslations
+    elif selectedLang == "Punjabi":
+        paTranslations = [translator.translate(o, dest='pa').text for o in ogOutputs]
+        outputs = paTranslations
+    elif selectedLang == "Chinese":
+        cnTranslations = [translator.translate(o, dest='zh-cn').text for o in ogOutputs]
+        outputs = cnTranslations
     elif selectedLang == "English":
         outputs = ogOutputs
 
@@ -160,7 +169,10 @@ def keylogging():
 
 def encrypt():
     currentWindow.withdraw()
-    encryptor(fernet)
+    try: 
+        encryptor(fernet, selectedLang)
+    except:
+        encryptor(fernet, "English")
     currentWindow.deiconify()
         
 
@@ -269,18 +281,18 @@ passwordImg = CTkImage(dark_image=passwordImg_data)
 
 usernameLabel = CTkLabel(master=app, text="  Username:", anchor="w", justify="left", font=("Arial Bold", 14), 
                          image=userImg, compound="left")
-usernameLabel.place(relx=0.275, rely= 0.32, anchor="w")
+usernameLabel.place(relx=0.275, rely= 0.25, anchor="w")
 usernameEntry = CTkEntry(master=app, width=225, fg_color="#EEEEEE", 
                          border_color="#598eb2", border_width=1, text_color="#000000")
-usernameEntry.place(relx=0.5, rely=0.4, anchor="center")
+usernameEntry.place(relx=0.5, rely=0.33, anchor="center")
 
 
 passwordLabel = CTkLabel(master=app, text="  Password:", anchor="w", justify="left", 
                          font=("Arial Bold", 14), image=passwordImg, compound="left")
-passwordLabel.place(relx=0.275, rely= 0.52, anchor="w")
+passwordLabel.place(relx=0.275, rely= 0.45, anchor="w")
 passwordEntry = CTkEntry(master=app, width=225, fg_color="#EEEEEE", border_color="#598eb2", 
                          border_width=1, text_color="#000000", show="*")
-passwordEntry.place(relx=0.5, rely=0.6, anchor="center")
+passwordEntry.place(relx=0.5, rely=0.53, anchor="center")
 
 unsuccessfulLogInMessage = CTkLabel(master=app, text=" ", text_color="#EE4B2B", 
                                     anchor="center", font=("ArialBold", 12))
@@ -312,9 +324,14 @@ welcomeLabel.place(relx=0.5, rely=0.1, anchor="center")
 
 global languageSelector
 
+
+
 languageLabel = CTkLabel(master=app, text="Language:")
 languageLabel.place(relx=0.35, rely=0.73, anchor="center")
-languageSelector = CTkComboBox(master=app, values=["English", "French", "Italian", "Spanish", "Japanese", "Arabic"], state="readonly", command=changeLanguage)
+languageSelector = CTkComboBox(master=app, 
+                               values=["English", "French", "Italian", 
+                                       "Spanish", "Japanese", "Chinese", 
+                                        "Hebrew","Arabic", "Punjabi"], state="readonly", command=changeLanguage)
 languageSelector.set("English")
 languageSelector.place(relx=0.6, rely=0.73, anchor="center")
 

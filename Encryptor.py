@@ -2,8 +2,10 @@ from cryptography.fernet import Fernet
 from customtkinter import *
 from tkinter import messagebox as msg
 from PIL import Image
+from googletrans import Translator
 
 key = Fernet.generate_key()
+
 
 
 fernet = Fernet(key)
@@ -12,8 +14,38 @@ def back2():
         return
 
 
-def encryptor(fernet): 
-    quit = 0
+def encryptor(fernet, selectedLang): 
+    outputs = ["Are you sure you want to exit", "Exit", "Back", "Copy to Clipboard",
+           "Enter your message to be encrypted", "Enter your message to be decrypted", 
+           "Error: Message uses invalid key", "Decrypted Message:", "Decrypt", "Encrypt", 
+           "Encrypted Message:", "Encryptor"]
+    translator = Translator()
+    if selectedLang == "French":
+        frTranslations = [translator.translate(o, dest='fr').text for o in outputs]
+        outputs = frTranslations
+    elif selectedLang == "Italian":
+        itTranslations = [translator.translate(o, dest='it').text for o in outputs]
+        outputs = itTranslations 
+    elif selectedLang == "Spanish":
+        esTranslations = [translator.translate(o, dest='es').text for o in outputs]
+        outputs = esTranslations
+    elif selectedLang == "Japanese":
+        jpTranslations = [translator.translate(o, dest='ja').text for o in outputs]
+        outputs = jpTranslations
+    elif selectedLang == "Arabic":
+        arTranslations = [translator.translate(o, dest='ar').text for o in outputs]
+        outputs = arTranslations
+    elif selectedLang == "Hebrew":
+        heTranslations = [translator.translate(o, dest='he').text for o in outputs]
+        outputs = heTranslations
+    elif selectedLang == "Punjabi":
+        paTranslations = [translator.translate(o, dest='pa').text for o in outputs]
+        outputs = paTranslations
+    elif selectedLang == "Chinese":
+        cnTranslations = [translator.translate(o, dest='zh-cn').text for o in outputs]
+        outputs = cnTranslations
+    
+
     encryptWindow = CTk()
     hs = encryptWindow.winfo_screenheight()
     ws = encryptWindow.winfo_screenwidth()
@@ -34,7 +66,7 @@ def encryptor(fernet):
             return
 
     def on_closing():
-        response = msg.askyesnocancel("Confirm Exit", "Are you sure you want to exit?")
+        response = msg.askyesnocancel("Confirm Exit", outputs[0])
         if response is None:
         # User clicked "Cancel"
             return
@@ -43,7 +75,7 @@ def encryptor(fernet):
             print("Exited with code 0")
             os._exit(0)
 
-    quitBtn = CTkButton(master=encryptWindow, text="Exit", corner_radius=10, fg_color="transparent", 
+    quitBtn = CTkButton(master=encryptWindow, text=outputs[1], corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=on_closing)
     
 
@@ -52,8 +84,6 @@ def encryptor(fernet):
         encryptWindow.clipboard_append(msg)
         encryptWindow.update()
     
-    copyBtn = CTkButton(master=encryptWindow, text="Copy To Clipboard", corner_radius=10, fg_color="transparent", 
-                     hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=copy)
     
 
     def decrypt():
@@ -69,7 +99,7 @@ def encryptor(fernet):
                 decryptTextbox.insert("0.0", decryptedMsg)
                 decryptTextbox.configure(state="disabled")
             except:
-                 decryptTextbox.insert("0.0", "Error: Message uses invalid key")
+                 decryptTextbox.insert("0.0", outputs[6])
             encryptWindow.update()
         
         def goCopy():
@@ -77,9 +107,9 @@ def encryptor(fernet):
             copy(msg)
 
 
-        backBtn = CTkButton(master=encryptWindow, text="Back", corner_radius=10, fg_color="transparent", 
+        backBtn = CTkButton(master=encryptWindow, text=outputs[2], corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=back)
-        copyBtn = CTkButton(master=encryptWindow, text="Copy To Clipboard", corner_radius=10, fg_color="transparent", 
+        copyBtn = CTkButton(master=encryptWindow, text=outputs[3], corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=goCopy)
         copyBtn.place(relx=0.5, rely=0.85, anchor="center")
         backBtn.place(relx=0.3, rely=0.95, anchor="center")
@@ -88,14 +118,14 @@ def encryptor(fernet):
         titleLabel.place_forget()
         encryptorBtn.place_forget()
         decryptorBtn.place_forget()
-        decryptMsg = CTkLabel(master=encryptWindow, text="Enter your message to be decrypted", font=("Arial Bold", 20))
+        decryptMsg = CTkLabel(master=encryptWindow, text=outputs[5], font=("Arial Bold", 20))
         decryptMsg.place(relx=0.5, rely=0.10, anchor="center")
         decryptEntry = CTkEntry(master=encryptWindow, width=300, fg_color="#EEEEEE", border_color="#598eb2", 
                          border_width=1, text_color="#000000")
         decryptEntry.place(relx=0.5, rely=0.25, anchor="center")
-        decryptMsg2 = CTkLabel(master=encryptWindow, text="Decrypted Message:", font=("Arial Bold", 20))
+        decryptMsg2 = CTkLabel(master=encryptWindow, text=outputs[7], font=("Arial Bold", 20))
         decryptMsg2.place(relx=0.5, rely=0.55, anchor="center")
-        decryptBtn = CTkButton(master=encryptWindow, text="Decrypt", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+        decryptBtn = CTkButton(master=encryptWindow, text=outputs[8], corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=150, font=("ArialBold", 16), command=decryptText)
         decryptBtn.place(relx=0.5, rely=0.4, anchor="center")
 
@@ -123,9 +153,9 @@ def encryptor(fernet):
             copy(msg)
 
 
-        backBtn = CTkButton(master=encryptWindow, text="Back", corner_radius=10, fg_color="transparent", 
+        backBtn = CTkButton(master=encryptWindow, text=outputs[2], corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=back)
-        copyBtn = CTkButton(master=encryptWindow, text="Copy To Clipboard", corner_radius=10, fg_color="transparent", 
+        copyBtn = CTkButton(master=encryptWindow, text=outputs[3], corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=goCopy)
         backBtn.place(relx=0.3, rely=0.9, anchor="center")
         quitBtn.place(relx=0.7, rely=0.9, anchor="center")
@@ -134,14 +164,14 @@ def encryptor(fernet):
         titleLabel.place_forget()
         encryptorBtn.place_forget()
         decryptorBtn.place_forget()
-        encryptMsg = CTkLabel(master=encryptWindow, text="Enter your message to be encrypted", font=("Arial Bold", 20))
+        encryptMsg = CTkLabel(master=encryptWindow, text=outputs[4], font=("Arial Bold", 20))
         encryptMsg.place(relx=0.5, rely=0.10, anchor="center")
         encryptEntry = CTkEntry(master=encryptWindow, width=300, fg_color="#EEEEEE", border_color="#598eb2", 
                          border_width=1, text_color="#000000")
         encryptEntry.place(relx=0.5, rely=0.25, anchor="center")
-        encryptMsg2 = CTkLabel(master=encryptWindow, text="Encrypted Message:", font=("Arial Bold", 20))
+        encryptMsg2 = CTkLabel(master=encryptWindow, text=outputs[10], font=("Arial Bold", 20))
         encryptMsg2.place(relx=0.5, rely=0.55, anchor="center")
-        encryptBtn = CTkButton(master=encryptWindow, text="Encrypt", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+        encryptBtn = CTkButton(master=encryptWindow, text=outputs[9], corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=150, font=("ArialBold", 16), command=encryptText)
         encryptBtn.place(relx=0.5, rely=0.4, anchor="center")
 
@@ -151,14 +181,14 @@ def encryptor(fernet):
         encryptWindow.update()
 
 
-    titleLabel = CTkLabel(master=encryptWindow, text="Encryptor", 
+    titleLabel = CTkLabel(master=encryptWindow, text=outputs[11], 
                         font=("Calibri", 35))
     titleLabel.place(relx=0.5, rely=0.15, anchor="center")
 
-    decryptorBtn = CTkButton(master=encryptWindow, text="Decrypt", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+    decryptorBtn = CTkButton(master=encryptWindow, text=outputs[8], corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=150, font=("ArialBold", 16), command=decrypt)
 
-    encryptorBtn = CTkButton(master=encryptWindow, text="Encrypt", corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
+    encryptorBtn = CTkButton(master=encryptWindow, text=outputs[9], corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=150, font=("ArialBold", 16), command=encrypt)
     
     decryptorBtn.place(relx = 0.7, rely=0.5, anchor="center")
@@ -168,12 +198,11 @@ def encryptor(fernet):
     def back2():
          encryptWindow.withdraw()
          encryptWindow.quit()
-         print("123")
          global quit
          quit = 1
          return quit   
 
-    backBtn2 = CTkButton(master=encryptWindow, text="Back", corner_radius=10, fg_color="transparent", 
+    backBtn2 = CTkButton(master=encryptWindow, text=outputs[2], corner_radius=10, fg_color="transparent", 
                      hover_color="#598eb2", border_color="#FFFFFF", border_width=2, command=back2)
     
     backBtn2.place(relx=0.3, rely=0.85, anchor="center")
