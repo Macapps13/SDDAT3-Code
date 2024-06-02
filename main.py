@@ -6,11 +6,9 @@ from PIL import Image
 import Keylogger
 import Network
 from Encryptor import encryptor
-import multiprocessing
 from tkinter import messagebox as msg
 import os
 import time
-import threading
 from cryptography.fernet import Fernet
 from googletrans import Translator
 
@@ -41,7 +39,6 @@ encryptBtnText = "Encryption"
 welcomeLabelText = "Welcome to the MHS Cybersecurity Dashboard"
 
 global outputs
-global ogOutputs
 
 ogOutputs = [keyLogLabelText, keyLogLengthErrorLabelText, keyLogLengthLabelText, keyLogLengthBtnText, responseText, 
            welcomeLabel2Text, instructionLabelText, quitBtnText, unsuccessfulLogInMessageText, logInBtnText, keyLogBtnText,
@@ -189,9 +186,6 @@ def on_closing():
         currentWindow.withdraw()
         os._exit(0)
 
-
-    
-
 def openMenu():
     app.withdraw()
     app.quit()
@@ -245,12 +239,6 @@ def openMenu():
 
     menu.protocol("WM_DELETE_WINDOW", on_closing)
     menu.mainloop()
-
-
-
-
-
-   
 
 
 print("Lisenced by Ben Alvaro, 2024")

@@ -25,7 +25,6 @@ def stop_logging():
     sys.exit(0)
 
 
-
 def start_keylogger(length):
     print("Keylogger Starting")
     now = datetime.datetime.now()
