@@ -6,6 +6,7 @@
 import socket
 import threading
 from queue import Queue
+import datetime
 
 target = "153.107.45.15" ##MHS IP Address
 queue = Queue()
@@ -30,11 +31,22 @@ def worker():
     while not queue.empty():
         port = queue.get()
         if portscan(port):
-            print("Uh Oh! Port {} is open!".format(port))
+            openPortMsg = "Uh Oh! Port {} is open!".format(port)
+            print(openPortMsg)
+            with open(filename, 'a') as logs:
+                logs.write(openPortMsg + ("\n"))
             open_ports.append(port)
         else:
-            print("Port {} is closed!".format(port))
+            closedPortMsg = "Port {} is closed!".format(port)
+            print(closedPortMsg)
+            with open(filename, 'a') as logs:
+                logs.write(closedPortMsg + ("\n"))
 def run_scanner(threads, mode):
+    
+    now = datetime.datetime.now()
+    timestamp = now.strftime("%Y-%m-%d_%H-%M-%S")
+    global filename
+    filename = f"network_{timestamp}.txt"
 
     get_ports(mode)
 
@@ -50,6 +62,14 @@ def run_scanner(threads, mode):
     for thread in thread_list:
         thread.join()
 
-    print("Open ports are:", open_ports)
+    open_ports_message = "Open ports are:", open_ports
+    print(open_ports_message)
+    with open(filename, 'a') as logs:
+        logs.write(str(open_ports_message))
 
-run_scanner(100, 1)
+
+
+
+
+
+

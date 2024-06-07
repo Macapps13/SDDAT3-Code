@@ -4,11 +4,12 @@
 from customtkinter import *
 from PIL import Image
 import Keylogger
-import Network
+import placeholder
 from Encryptor import encryptor
 from tkinter import messagebox as msg
 import os
 import time
+import Network
 from cryptography.fernet import Fernet
 from googletrans import Translator
 
@@ -24,7 +25,7 @@ global selectedLang
 
 
 keyLogLabelText = "Keylogger is running..."
-keyLogLengthErrorLabelText = "Error: Length Provided was not a valid input (Must be a whole number)"
+keyLogLengthErrorLabelText = "Error: Length Provided was not a valid input (Must be a number less than 60)"
 keyLogLengthLabelText = "How long in minutes should the keylogger run for?"
 keyLogLengthBtnText = "Submit"
 responseText = "Are you sure you want to exit?"
@@ -34,19 +35,20 @@ quitBtnText = "Exit"
 unsuccessfulLogInMessageText = "Unsuccessful Login Attempt, Please Try Again"
 logInBtnText = "Log In"
 keyLogBtnText =  "Keylogger"
-networkBtnText =  "Network Surveillance"
+networkBtnText =  "Network Check"
 encryptBtnText = "Encryption"
 welcomeLabelText = "Welcome to the MHS Cybersecurity Dashboard"
+networkLabelText = "Finding potential vulnerabilities..."
 
 global outputs
 
 ogOutputs = [keyLogLabelText, keyLogLengthErrorLabelText, keyLogLengthLabelText, keyLogLengthBtnText, responseText, 
            welcomeLabel2Text, instructionLabelText, quitBtnText, unsuccessfulLogInMessageText, logInBtnText, keyLogBtnText,
-           networkBtnText, encryptBtnText, welcomeLabelText]
+           networkBtnText, encryptBtnText, welcomeLabelText, networkLabelText]
 
 outputs = [keyLogLabelText, keyLogLengthErrorLabelText, keyLogLengthLabelText, keyLogLengthBtnText, responseText, 
            welcomeLabel2Text, instructionLabelText, quitBtnText, unsuccessfulLogInMessageText, logInBtnText, keyLogBtnText,
-           networkBtnText, encryptBtnText, welcomeLabelText]
+           networkBtnText, encryptBtnText, welcomeLabelText, networkLabelText]
 
 
 def changeLanguage(event=None):
@@ -90,14 +92,42 @@ def changeLanguage(event=None):
     app.deiconify()
     return
 
+
+
+
+
 def place():
     keyLogBtn.place()
     networkBtn.place()
     quitBtn.place()
     encryptBtn.place()
     instructionLabel.place()
-    keyLogLabel.place_forget()
- 
+
+def network():
+    welcomeLabel2.place_forget()
+    keyLogBtn.place_forget()
+    networkBtn.place_forget()
+    encryptBtn.place_forget()
+    instructionLabel.place_forget()
+    quitBtn.place_forget()
+    networkLabel = CTkLabel(master=menu, text=outputs[14], font=("Calibri", 20))
+    networkLabel.place(relx=0.5, rely=0.5, anchor="center")
+    menu.update()
+
+
+
+    Network.run_scanner(500,1)
+
+    networkLabel.place_forget()
+    quitBtn.place(relx=0.5, rely=0.85, anchor="center")
+    keyLogBtn.place(relx=0.5, rely=0.3, anchor="center")
+    encryptBtn.place(relx=0.5, rely=0.45, anchor="center")
+    networkBtn.place(relx=0.5, rely=0.6, anchor="center")
+    instructionLabel.place(relx=0.5, rely=0.15, anchor="center")
+    welcomeLabel.place(relx=0.5, rely=0.1, anchor="center")
+    return
+
+    
 
 
 def keylogging():
@@ -117,7 +147,7 @@ def keylogging():
         keyLogLength = keyLogLengthEntry.get()
         try: 
             keyLogLengthS = int(round(float(keyLogLength)*60))
-            if keyLogLengthS <=0:
+            if keyLogLengthS <=0 or keyLogLengthS > 3600:
                 raise Exception
             keyLogLengthBtn.place_forget()
             keyLogLengthEntry.place_forget()
@@ -127,6 +157,8 @@ def keylogging():
             keyLogLabel = CTkLabel(master=menu, text=outputs[0], font=("Calibri", 20))
             keyLogLabel.place(relx=0.5, rely=0.5, anchor="center")
             menu.update()
+            time.sleep(2)
+            menu.iconify()
     
             Keylogger.start_keylogger(keyLogLengthS)
             time.sleep(keyLogLengthS)
@@ -224,7 +256,7 @@ def openMenu():
                           , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command = encrypt)
 
     networkBtn = CTkButton(master=menu, text=outputs[11], corner_radius=10, fg_color="#FFFFFF", hover_color="#598eb2"
-                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16))
+                          , border_color="#FFFFFF", border_width=2, text_color="#000000", width=250, font=("ArialBold", 16), command=network)
     
     keyLogBtn.place(relx=0.5, rely=0.35, anchor="center")
     encryptBtn.place(relx=0.5, rely=0.5, anchor="center")
@@ -310,7 +342,7 @@ welcomeLabel = CTkLabel(master=app, text=outputs[13],
 welcomeLabel.place(relx=0.5, rely=0.1, anchor="center")
 #Places the labels in the middle horizontally, and slightly up
 
-global languageSelector
+
 
 
 
